@@ -1,0 +1,21 @@
+{
+  "name": "AURA – Your Ultimate AI Companion",
+  "short_name": "AURA",
+  "description": "One AI. Unlimited possibilities.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#8B5CF6",
+  "icons": [
+    {
+      "src": "https://picsum.photos/seed/aura/192/192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://picsum.photos/seed/aura/512/512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

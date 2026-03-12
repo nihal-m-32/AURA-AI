@@ -2,25 +2,61 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-aura-primary: #8B5CF6;
+  --color-aura-secondary: #EC4899;
+  --color-aura-accent: #10B981;
+  --color-aura-bg: #0F172A;
+  
+  --radius-aura: 1.5rem;
 }
 
-@layer base {
-  body {
-    @apply bg-neutral-50 text-neutral-900 antialiased;
+@layer utilities {
+  .glass {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl;
+  }
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-aura-primary to-aura-secondary;
+  }
+  .bg-aura-gradient {
+    @apply bg-gradient-to-br from-aura-bg via-[#1E1B4B] to-aura-bg;
+  }
+  .glow-aura {
+    @apply shadow-[0_0_30px_rgba(139,92,246,0.3)];
   }
 }
 
+body {
+  @apply bg-aura-bg text-slate-200 font-sans antialiased selection:bg-aura-primary/30;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+}
+
 .chat-bubble-user {
-  @apply bg-indigo-600 text-white rounded-2xl rounded-tr-none px-4 py-2 max-w-[80%] self-end shadow-sm;
+  @apply bg-aura-primary text-white rounded-2xl rounded-tr-none px-4 py-3 max-w-[85%] self-end shadow-lg glow-aura;
 }
 
 .chat-bubble-ai {
-  @apply bg-white text-neutral-800 rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%] self-start border border-neutral-200 shadow-sm;
+  @apply glass text-slate-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-[85%] self-start border border-white/10 shadow-lg;
 }
 
 .typing-dot {
-  @apply w-1.5 h-1.5 bg-neutral-400 rounded-full animate-bounce;
+  @apply w-1.5 h-1.5 bg-aura-primary rounded-full animate-bounce;
 }
 
 .typing-dot:nth-child(2) {
@@ -29,17 +65,4 @@
 
 .typing-dot:nth-child(3) {
   animation-delay: 0.4s;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-neutral-200 rounded-full hover:bg-neutral-300 transition-colors;
 }
