@@ -26,7 +26,6 @@ import {
   Eraser
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { GoogleGenAI } from "@google/genai";
 
 // --- Types ---
 
@@ -170,17 +169,21 @@ export default function App() {
 
   // Persistence
   useEffect(() => {
-    localStorage.setItem('aura_sessions', JSON.stringify(sessions));
-  }, [sessions]);
+    if (!isStarting) {
+      localStorage.setItem('aura_sessions', JSON.stringify(sessions));
+    }
+  }, [sessions, isStarting]);
 
   useEffect(() => {
-    localStorage.setItem('aura_settings', JSON.stringify(settings));
-    if (settings.darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+    if (!isStarting) {
+      localStorage.setItem('aura_settings', JSON.stringify(settings));
+      if (settings.darkMode) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
-  }, [settings]);
+  }, [settings, isStarting]);
 
   // Auto-scroll
   useEffect(() => {
@@ -444,36 +447,28 @@ export default function App() {
         // Already set by empty tool request
       } else if (lowerText.includes("who made you") || lowerText.includes("who created you") || lowerText.includes("your creator")) {
         aiResponse = "I was created by Nihal. He designed me to be a helpful and supportive AI companion.";
-      } else if (process.env.GEMINI_API_KEY) {
+      } else {
         try {
-          const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-          const response = await ai.models.generateContent({
-            model: "gemini-3-flash-preview",
-            contents: [{
-              role: 'user',
-              parts: [{ 
-                text: `${systemPrompt}
-                
-                Conversation history:
-                ${messages.slice(-5).map(m => `${m.sender}: ${m.text}`).join('\n')}
-                
-                User says: ${text}` 
-              }]
-            }],
-            config: {
-              temperature: 0.7,
-              topP: 0.95,
-              topK: 40,
-            }
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              message: text, 
+              systemPrompt: `${systemPrompt}\n\nConversation history:\n${sessions.find(s => s.id === targetSessionId)?.messages.slice(-5).map(m => `${m.sender}: ${m.text}`).join('\n')}`
+            })
           });
           
-          aiResponse = response.text || (aiConfig?.fallbackResponses[Math.floor(Math.random() * aiConfig.fallbackResponses.length)] || "I'm here for you.");
-        } catch (error) {
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to get response');
+          }
+          
+          const data = await response.json();
+          aiResponse = data.text;
+        } catch (error: any) {
           console.error("Aura AI Error:", error);
           aiResponse = "I'm having a little trouble connecting to my brain right now. Could you try saying that again? (Error: " + (error instanceof Error ? error.message : "Unknown") + ")";
         }
-      } else {
-        aiResponse = aiConfig?.fallbackResponses[Math.floor(Math.random() * aiConfig.fallbackResponses.length)] || "I'm here for you.";
       }
 
       const aiMsg: Message = {

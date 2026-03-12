@@ -15,6 +15,30 @@ async function startServer() {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
+  app.post("/api/chat", express.json(), async (req, res) => {
+    const { message, systemPrompt } = req.body;
+    
+    if (!process.env.GEMINI_API_KEY) {
+      return res.status(500).json({ error: "Gemini API key not configured on server." });
+    }
+
+    try {
+      const { GoogleGenAI } = await import("@google/genai");
+      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const response = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        contents: message,
+        config: {
+          systemInstruction: systemPrompt,
+        },
+      });
+      res.json({ text: response.text });
+    } catch (error: any) {
+      console.error("Chat API Error:", error);
+      res.status(500).json({ error: error.message || "Failed to generate response" });
+    }
+  });
+
   app.get("/api/config", (req, res) => {
     res.json({
       systemPrompt: `You are Aura, an intelligent, safe, and supportive AI companion. 
