@@ -1,32 +1,52 @@
 // Firebase.ts
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-
-// Firebase config from environment variables
-const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
-};
-
-// Initialize Firebase App
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, User } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import firebaseConfig from '../firebase-applet-config.json';
 
+// Initialize Firebase App
 const app = initializeApp(firebaseConfig);
+
+// Firebase Services
 export const auth = getAuth(app);
-export const db = getFirestore(app); // <- NO extra param
+export const db = getFirestore(app); // Default Firestore
 export const storage = getStorage(app);
 
-// Export Auth, Firestore, and Storage
-export const auth = getAuth(app);
-export const db = getFirestore(app); // Default Firestore database
-export const storage = getStorage(app);
+// Google Auth Provider
+const provider = new GoogleAuthProvider();
+
+/**
+ * Sign in with Google
+ */
+export async function signInWithGoogle(): Promise<User | null> {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    console.log('Signed in user:', result.user);
+    return result.user;
+  } catch (error: any) {
+    console.error('Sign-in error:', error.message);
+    alert('Sign-in failed: ' + error.message);
+    return null;
+  }
+}
+
+/**
+ * Sign out the current user
+ */
+export async function signOutUser(): Promise<void> {
+  try {
+    await signOut(auth);
+    console.log('User signed out');
+  } catch (error: any) {
+    console.error('Sign-out error:', error.message);
+    alert('Sign-out failed: ' + error.message);
+  }
+}
+
+/**
+ * Check if user is signed in
+ */
+export function getCurrentUser(): User | null {
+  return auth.currentUser;
+}
