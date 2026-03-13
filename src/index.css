@@ -8,26 +8,59 @@
   --color-aura-primary: #8B5CF6;
   --color-aura-secondary: #EC4899;
   --color-aura-accent: #10B981;
-  --color-aura-bg: #0F172A;
+  --color-aura-bg: #050505;
   
   --radius-aura: 1.5rem;
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl;
+    background-color: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
   .glass-dark {
-    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   }
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-aura-primary to-aura-secondary;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    background-image: linear-gradient(to right, #8B5CF6, #EC4899);
   }
   .bg-aura-gradient {
-    @apply bg-gradient-to-br from-aura-bg via-[#1E1B4B] to-aura-bg;
+    background-color: #050505;
+    background-image: radial-gradient(circle at 50% 50%, #1a1033 0%, #050505 100%);
   }
   .glow-aura {
-    @apply shadow-[0_0_30px_rgba(139,92,246,0.3)];
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+  }
+  .glow-aura-lg {
+    box-shadow: 0 0 50px rgba(139, 92, 246, 0.5);
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
@@ -36,23 +69,54 @@ body {
   overflow-x: hidden;
 }
 
+h1, h2, h3, h4, .font-display {
+  @apply font-display;
+}
+
+.markdown-body {
+  @apply text-sm leading-relaxed space-y-4;
+}
+.markdown-body p { @apply mb-4; }
+.markdown-body h1 { @apply text-2xl font-black mb-4 mt-6; }
+.markdown-body h2 { @apply text-xl font-black mb-3 mt-5; }
+.markdown-body h3 { @apply text-lg font-black mb-2 mt-4; }
+.markdown-body ul, .markdown-body ol { @apply pl-6 mb-4 space-y-2; }
+.markdown-body ul { @apply list-disc; }
+.markdown-body ol { @apply list-decimal; }
+.markdown-body code { @apply bg-white/10 px-1.5 py-0.5 rounded font-mono text-xs; }
+.markdown-body pre { @apply bg-black/40 p-4 rounded-2xl border border-white/10 overflow-x-auto my-4; }
+.markdown-body pre code { @apply bg-transparent p-0; }
+.markdown-body blockquote { @apply border-l-4 border-aura-primary pl-4 italic text-slate-400; }
+.markdown-body table { @apply w-full border-collapse mb-4; }
+.markdown-body th, .markdown-body td { @apply border border-white/10 p-2 text-left; }
+.markdown-body th { @apply bg-white/5; }
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .chat-bubble-user {
-  @apply bg-aura-primary text-white rounded-2xl rounded-tr-none px-4 py-3 max-w-[85%] self-end shadow-lg glow-aura;
+  @apply bg-aura-primary text-white rounded-2xl rounded-tr-none px-4 py-3 max-w-[85%] self-end shadow-lg;
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
 }
 
 .chat-bubble-ai {
-  @apply glass text-slate-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-[85%] self-start border border-white/10 shadow-lg;
+  background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  @apply text-slate-100 rounded-2xl rounded-tl-none px-4 py-3 max-w-[85%] self-start;
 }
 
 .typing-dot {

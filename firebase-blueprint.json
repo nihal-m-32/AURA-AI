@@ -1,0 +1,85 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "dateOfBirth": { "type": "string" },
+        "accountCreated": { "type": "string" },
+        "lastLogin": { "type": "string" },
+        "profileImage": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "preferences": {
+          "type": "object",
+          "properties": {
+            "theme": { "type": "string", "enum": ["dark", "light"] },
+            "fontSize": { "type": "string", "enum": ["sm", "base", "lg"] },
+            "notifications": { "type": "boolean" }
+          }
+        }
+      },
+      "required": ["userId", "name", "email", "role"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Individual chat message",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "sessionId": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "content": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "mode": { "type": "string", "enum": ["general", "study", "coding", "creative", "motivation", "search", "grok"] }
+      },
+      "required": ["userId", "sessionId", "role", "content", "timestamp"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "User task for to-do list",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["userId", "title", "completed", "createdAt"]
+    },
+    "StudyPlan": {
+      "title": "StudyPlan",
+      "description": "User study plan",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subject": { "type": "string" },
+        "goal": { "type": "string" },
+        "deadline": { "type": "string" },
+        "progress": { "type": "number" }
+      },
+      "required": ["userId", "subject", "goal"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/chat_history/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "Global chat history (queried by userId)"
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "User tasks"
+    },
+    "/study_plans/{planId}": {
+      "schema": "StudyPlan",
+      "description": "User study plans"
+    }
+  }
+}
