@@ -5,24 +5,22 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import firebaseConfig from '../firebase-applet-config.json';
 
-// Initialize Firebase App
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Firebase Services
+// Services
 export const auth = getAuth(app);
-export const db = getFirestore(app); // Default Firestore
+export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Google Auth Provider
+// Google Provider
 const provider = new GoogleAuthProvider();
 
-/**
- * Sign in with Google
- */
+// Sign in function
 export async function signInWithGoogle(): Promise<User | null> {
   try {
     const result = await signInWithPopup(auth, provider);
-    console.log('Signed in user:', result.user);
+    console.log('User signed in:', result.user);
     return result.user;
   } catch (error: any) {
     console.error('Sign-in error:', error.message);
@@ -31,9 +29,7 @@ export async function signInWithGoogle(): Promise<User | null> {
   }
 }
 
-/**
- * Sign out the current user
- */
+// Sign out function
 export async function signOutUser(): Promise<void> {
   try {
     await signOut(auth);
@@ -44,9 +40,7 @@ export async function signOutUser(): Promise<void> {
   }
 }
 
-/**
- * Check if user is signed in
- */
+// Get current user
 export function getCurrentUser(): User | null {
   return auth.currentUser;
 }
